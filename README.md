@@ -7,27 +7,35 @@ This microservice is used to filter all the incoming requests.
 ##### What does root service do ?
 - It autocompletes the incoming query with `show_more` flag and displays all the possible combinations of the same.
 - By default it displays top 5 records.
-- Further it takes query i.e. the searching criteria and `username` to redirect to the corresponding filter which is configured in mongo_db 
-  and returns the result after filtering the output.
+- Further it takes query i.e. the searching criteria and `username` to redirect to the corresponding filter which is    configured in mongo_db and returns the result after filtering the output.
 
+### Intents we support :
+- performance 
+- connectionleak
+- changes
+- junitresult
+- sahifailedsummary
+- sonar
+
+![RootService](rootservice.png)  
 
 ### Pre-Requisites
 
 1. python 3.6.0 or above version.
-2. docker (optional) Refer [Install Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) documentation.
-3. mongo-db
+2. docker Refer [Install Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) documentation.
+3. [mongo-db] (https://www.mongodb.com/)
 
 
 ## Installation
 ### Checkout Repository
 ```
-$git clone https://github.com/digitedevops/MS-RootService.git
+$git clone https://github.com/swiftops/root-service.git
 ```
 
 ##### Configuration
 
 Steps :
-1. Open system.properties edit database ip.
+1. Open system.properties edit database ip which is used to connect mongodb.
 
 ### 1. Deploy inside Docker
     
@@ -35,7 +43,8 @@ Steps :
 Once done with pre-requisites, execute below command to start root microservice.
 ```
 docker build -t <image-name>
-docker run  -p 8082:8082 --name ms-rootservice -d <image-name>
+docker run -p <port_mapping> --name <container_name> -d <image-name>
+ex docker run  -p 8082:8082 --name ms-rootservice -d <image-name>
 ```
 
 
@@ -43,10 +52,10 @@ docker run  -p 8082:8082 --name ms-rootservice -d <image-name>
 ---
 To autodeploy your docker container based service on server used below steps
 * Need to configure Gitlab Runner to execute Gitlab CI/CD Pipeline. See [Gitlab Config](https://docs.gitlab.com/runner/install)
-<Configure .gitlab-ci.yml and deploy.sh as per requirement and remove this line>
 
-Once configured, Gitlab runner's auto deployment will start as code is committed in the repository.
+As soon as you configure runner auto deployment will start as you commited the code in repository.
 refer .gitlab-ci.yml file.
+
 
 ### 3. Deploy on local environment.
 ----
@@ -92,7 +101,7 @@ python services.py
 ```
 
 ### Architechture
-![Scheme](rootservice.JPG)
+![Scheme](rootservice_gunicorn.JPG)
 
 ##### Flask
 Flask is a micro web framework written in Python. It is classified as a microframework because it does not require particular tools or libraries.It has no database abstraction layer, form validation, or any other components where pre-existing third-party libraries provide common functions. However, Flask supports extensions that can add application features as if they were implemented in Flask itself.
@@ -103,7 +112,7 @@ http://flask.pocoo.org/docs/1.0/quickstart/
 The Gunicorn "Green Unicorn" (pronounced gee-unicorn)[2] is a Python Web Server Gateway Interface (WSGI) HTTP server. 
 
 ###### Features
-* Natively supports WSGI, web2py, Django and Paster
+* Natively supports [WSGI] (https://wsgi.readthedocs.io/en/latest/what.html) , [web2py] (http://www.web2py.com/) and [Django] (https://www.djangoproject.com/).
 * Automatic worker process management
 * Simple Python configuration
 * Multiple worker configurations
