@@ -7,17 +7,26 @@ This microservice is used to filter all the incoming requests.
 ##### What does root service do ?
 - It autocompletes the incoming query with `show_more` flag and displays all the possible combinations of the same.
 - By default it displays top 5 records.
-- Further it takes query i.e. the searching criteria and `username` to redirect to the corresponding filter which is    configured in mongo_db and returns the result after filtering the output.
+- Further it takes query i.e. the searching criteria (`intent`) and `username` to redirect to the corresponding filter which is    configured in mongo_db and returns the result after filtering the output.
 
 ### Intents we support :
-- performance 
-- connectionleak
-- changes
-- junitresult
-- sahifailedsummary
-- sonar
+Each intent below have separate microservice and must be started in order to work accordingly. If no service is started only intent search will be displayed. Custom intent can be added with some specific structure, refer any of service below. As of now text based search supported, [NLP](https://en.wikipedia.org/wiki/Natural_language_processing) is comming soon....
+- [performance](https://github.com/swiftops/jmeter-performance-report-parser)
+- [connectionleak](https://github.com/swiftops/connectionleak-detector)
+- [changes](https://github.com/swiftops/git_change_log)
+- [junitresult](https://github.com/swiftops/junit_result_aggregation)
+- [sahifailedsummary](https://github.com/swiftops/sahi-automation-result-parser)
+- [sonar](https://github.com/swiftops/sonar-metrics)
 
 ![RootService](rootservice.png)  
+
+##### 1. **Messaging Platform**
+This is interface to end user on top of **RootSevice**. RootService feed to messaging platform's. E.g. [slack-service](https://github.com/swiftops/slack-service), google hangout, skype or any custom conversational UI.
+
+##### 2. **Bot Engine**
+Bot engine is heart rootservice which communicate between messaging platform and each individual service. Bot engine have mainly two parts `rootservice` and `filterservice`. 
+-  **RootService** responsible for retrival of suggestion data from mongodb and return to messaging platform.
+-  **FilterService** is for fetching data from actual service endpoint like performance, sonar, connectionleak and any custom service.
 
 ### Pre-Requisites
 
@@ -35,7 +44,10 @@ $git clone https://github.com/swiftops/root-service.git
 ##### Configuration
 
 Steps :
-1. Open system.properties edit database ip which is used to connect mongodb.
+1. Create schema in mongodb with name **botengine** and import **master.json** and **service.json** 
+**master.json** contains schema for rootservice and **service.json** contains metadata of each individuak services.
+2. Open **system.properties** and change database ip accordingly. 
+
 
 ### 1. Deploy inside Docker
     
